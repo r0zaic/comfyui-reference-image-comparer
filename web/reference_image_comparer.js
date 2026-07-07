@@ -12,8 +12,16 @@ function viewUrl(data) {
   return api.apiURL(`/view?${params.toString()}`);
 }
 
-// The reference_image combo value can be "sub/dir/name.png" or "name.png [input]".
+// The reference_image combo value can be "sub/dir/name.png", "name.png [input]",
+// or (on newer frontends) an object like { filename, subfolder, type }.
 function parseInputValue(value) {
+  if (value && typeof value === "object") {
+    return {
+      filename: value.filename ?? "",
+      subfolder: value.subfolder ?? "",
+      type: value.type ?? "input",
+    };
+  }
   let type = "input";
   let filename = String(value);
   const annotated = filename.match(/^(.*) \[(input|output|temp)\]$/);
@@ -68,6 +76,17 @@ app.registerExtension({
           else this.imgB = null;
         },
 
+        // Reload the left side from the picker's current value if it changed,
+        // without waiting for a workflow run.
+        refreshReference() {
+          const picked = referenceWidget?.value;
+          if (!picked) return;
+          const key = typeof picked === "object" ? JSON.stringify(picked) : String(picked);
+          if (key === this._loadedFor) return;
+          this._loadedFor = key;
+          this.imgA = loadImg(viewUrl(parseInputValue(picked)), node);
+        },
+
         computeSize(width) {
           return [width ?? 240, 300];
         },
@@ -77,11 +96,7 @@ app.registerExtension({
           if (node.imgs?.length) node.imgs = null;
 
           // Preview the picked reference image even before the first run.
-          const picked = referenceWidget?.value;
-          if (picked && picked !== this._loadedFor) {
-            this._loadedFor = picked;
-            this.imgA = loadImg(viewUrl(parseInputValue(picked)), node);
-          }
+          this.refreshReference();
 
           const margin = 8;
           const availW = width - margin * 2;
@@ -158,6 +173,17 @@ app.registerExtension({
 
       node.__comparerWidget = widget;
       node.addCustomWidget(widget);
+
+      // Reload the reference preview the moment the picker changes.
+      if (referenceWidget) {
+        const origCallback = referenceWidget.callback;
+        referenceWidget.callback = function (...args) {
+          const r = origCallback?.apply(this, args);
+          widget.refreshReference();
+          node.setDirtyCanvas(true, false);
+          return r;
+        };
+      }
 
       // Swipe on hover (no click needed), like rgthree's comparer.
       const onMouseMove = node.onMouseMove;
