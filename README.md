@@ -19,9 +19,9 @@ without leaving ComfyUI.
 4. Run the workflow, then hover over the preview to swipe between the two
    images (click-dragging works too).
 
-The node re-runs automatically if the reference image file changes on disk.
-Note: after switching to a different reference, the preview updates on the
-next run.
+The node re-runs automatically if the reference image file changes on disk,
+and the reference side of the preview updates as soon as you pick a different
+file — no run needed.
 
 ## Credits
 

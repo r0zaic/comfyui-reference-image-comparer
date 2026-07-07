@@ -1,7 +1,7 @@
 [project]
 name = "comfyui-reference-image-comparer"
 description = "Compare your workflow's output against a fixed reference image with a hover swipe slider."
-version = "1.0.0"
+version = "1.0.1"
 license = { file = "LICENSE" }
 dependencies = []
 

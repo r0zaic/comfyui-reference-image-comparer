@@ -36,12 +36,15 @@ def _load_image_tensor(path):
 class ReferenceImageComparer(PreviewImage):
     """Compares a workflow result against a fixed reference image with a swipe slider."""
 
+    IMAGE_EXTENSIONS = (".png", ".jpg", ".jpeg", ".webp", ".gif", ".bmp")
+
     @classmethod
     def INPUT_TYPES(cls):
         input_dir = folder_paths.get_input_directory()
         files = sorted(
             f for f in os.listdir(input_dir)
-            if os.path.isfile(os.path.join(input_dir, f))
+            if f.lower().endswith(cls.IMAGE_EXTENSIONS)
+            and os.path.isfile(os.path.join(input_dir, f))
         )
         return {
             "required": {

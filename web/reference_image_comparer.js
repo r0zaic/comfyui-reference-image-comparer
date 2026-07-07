@@ -41,6 +41,10 @@ function parseInputValue(value) {
 function loadImg(src, node) {
   const img = new Image();
   img.onload = () => node.setDirtyCanvas(true, false);
+  img.onerror = () => {
+    img._err = true;
+    node.setDirtyCanvas(true, false);
+  };
   img.src = src;
   return img;
 }
