@@ -1,0 +1,14 @@
+[project]
+name = "comfyui-reference-image-comparer"
+description = "Compare your workflow's output against a fixed reference image with a hover swipe slider."
+version = "1.0.0"
+license = { file = "LICENSE" }
+dependencies = []
+
+[project.urls]
+Repository = "https://github.com/r0zaic/comfyui-reference-image-comparer"
+
+[tool.comfy]
+PublisherId = "r0zaic"
+DisplayName = "Reference Image Comparer"
+Icon = ""
