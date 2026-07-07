@@ -1,7 +1,7 @@
 import { app } from "../../scripts/app.js";
 import { api } from "../../scripts/api.js";
 
-const CLASS_NAME = "FixedImageComparer";
+const CLASS_NAME = "ReferenceImageComparer";
 
 function viewUrl(data) {
   const params = new URLSearchParams({
@@ -12,7 +12,7 @@ function viewUrl(data) {
   return api.apiURL(`/view?${params.toString()}`);
 }
 
-// The fixed_image combo value can be "sub/dir/name.png" or "name.png [input]".
+// The reference_image combo value can be "sub/dir/name.png" or "name.png [input]".
 function parseInputValue(value) {
   let type = "input";
   let filename = String(value);
@@ -40,7 +40,7 @@ function loadImg(src, node) {
 const ready = (img) => img && img.complete && img.naturalWidth > 0;
 
 app.registerExtension({
-  name: "FixedImageComparer.ui",
+  name: "ReferenceImageComparer.ui",
   async beforeRegisterNodeDef(nodeType, nodeData) {
     if (nodeData.name !== CLASS_NAME) return;
 
@@ -48,10 +48,10 @@ app.registerExtension({
     nodeType.prototype.onNodeCreated = function () {
       onNodeCreated?.apply(this, arguments);
       const node = this;
-      const fixedWidget = node.widgets?.find((w) => w.name === "fixed_image");
+      const referenceWidget = node.widgets?.find((w) => w.name === "reference_image");
 
       const widget = {
-        type: "fixedcompare",
+        type: "refcompare",
         name: "comparer",
         value: "",
         serialize: false,
@@ -76,8 +76,8 @@ app.registerExtension({
           // Suppress the default upload-preview so it doesn't draw under us.
           if (node.imgs?.length) node.imgs = null;
 
-          // Preview the picked fixed image even before the first run.
-          const picked = fixedWidget?.value;
+          // Preview the picked reference image even before the first run.
+          const picked = referenceWidget?.value;
           if (picked && picked !== this._loadedFor) {
             this._loadedFor = picked;
             this.imgA = loadImg(viewUrl(parseInputValue(picked)), node);
@@ -140,7 +140,7 @@ app.registerExtension({
             ctx.fillStyle = "#fff";
             ctx.fillText(text, x, dy + 6);
           };
-          if (ready(this.imgA)) label("fixed", dx + 6, "left");
+          if (ready(this.imgA)) label("reference", dx + 6, "left");
           if (ready(this.imgB)) label("result", dx + dw - 6, "right");
           ctx.restore();
         },

@@ -1,11 +1,11 @@
-from .fixed_image_comparer import FixedImageComparer
+from .reference_image_comparer import ReferenceImageComparer
 
 NODE_CLASS_MAPPINGS = {
-    "FixedImageComparer": FixedImageComparer,
+    "ReferenceImageComparer": ReferenceImageComparer,
 }
 
 NODE_DISPLAY_NAME_MAPPINGS = {
-    "FixedImageComparer": "Fixed Image Comparer",
+    "ReferenceImageComparer": "Reference Image Comparer",
 }
 
 WEB_DIRECTORY = "./web"
