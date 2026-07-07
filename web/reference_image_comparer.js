@@ -56,7 +56,6 @@ app.registerExtension({
     nodeType.prototype.onNodeCreated = function () {
       onNodeCreated?.apply(this, arguments);
       const node = this;
-      const referenceWidget = node.widgets?.find((w) => w.name === "reference_image");
 
       const widget = {
         type: "refcompare",
@@ -77,9 +76,11 @@ app.registerExtension({
         },
 
         // Reload the left side from the picker's current value if it changed,
-        // without waiting for a workflow run.
+        // without waiting for a workflow run. The widget must be looked up
+        // fresh each time: it may not exist yet when the node is created.
         refreshReference() {
-          const picked = referenceWidget?.value;
+          const refWidget = node.widgets?.find((w) => w.name === "reference_image");
+          const picked = refWidget?.value;
           if (!picked) return;
           const key = typeof picked === "object" ? JSON.stringify(picked) : String(picked);
           if (key === this._loadedFor) return;
@@ -173,17 +174,6 @@ app.registerExtension({
 
       node.__comparerWidget = widget;
       node.addCustomWidget(widget);
-
-      // Reload the reference preview the moment the picker changes.
-      if (referenceWidget) {
-        const origCallback = referenceWidget.callback;
-        referenceWidget.callback = function (...args) {
-          const r = origCallback?.apply(this, args);
-          widget.refreshReference();
-          node.setDirtyCanvas(true, false);
-          return r;
-        };
-      }
 
       // Swipe on hover (no click needed), like rgthree's comparer.
       const onMouseMove = node.onMouseMove;
