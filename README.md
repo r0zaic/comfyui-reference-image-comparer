@@ -7,6 +7,8 @@ is your reference, right is the freshly generated result. Useful for A/B-ing
 prompt tweaks, sampler settings, or model changes against a known baseline
 without leaving ComfyUI.
 
+![Reference Image Comparer node showing a swipe comparison between a golden-hour reference and a rainy-night result](assets/screenshot.png)
+
 ## Usage
 
 1. Add **Reference Image Comparer** to your workflow.
@@ -18,6 +20,8 @@ without leaving ComfyUI.
    images (click-dragging works too).
 
 The node re-runs automatically if the reference image file changes on disk.
+Note: after switching to a different reference, the preview updates on the
+next run.
 
 ## Credits
 
